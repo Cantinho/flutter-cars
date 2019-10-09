@@ -23,6 +23,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final _passwordFocus = FocusNode();
 
+  bool _showProgress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,35 +36,44 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _body() {
-    return Form(
-      key: _formKey,
-      child: Container(
-        margin: EdgeInsets.all(16),
-        child: ListView(
-          children: <Widget>[
-            AppInputText(
-              'E-mail',
-              "Insert your best e-mail",
-              controller: _tLoginController,
-              validator: _validateLogin,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              context: context,
-              nextFocus: _passwordFocus
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        _showProgress
+            ? LinearProgressIndicator(
+                backgroundColor: Colors.deepPurple,
+              )
+            : Container(),
+        Expanded(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              margin: EdgeInsets.all(16),
+              child: ListView(
+                children: <Widget>[
+                  AppInputText('E-mail', "Insert your best e-mail",
+                      controller: _tLoginController,
+                      validator: _validateLogin,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      context: context,
+                      nextFocus: _passwordFocus),
+                  SizedBox(height: 8),
+                  AppInputText('Password', "Insert a string password",
+                      controller: _tPasswordController,
+                      validator: _validatePassword,
+                      keyboardType: TextInputType.number,
+                      context: context,
+                      focusNode: _passwordFocus,
+                      password: true),
+                  SizedBox(height: 16),
+                  AppButton("Login", onPressed: _onClickLogin)
+                ],
+              ),
             ),
-            SizedBox(height: 8),
-            AppInputText('Password', "Insert a string password",
-                controller: _tPasswordController,
-                validator: _validatePassword,
-                keyboardType: TextInputType.number,
-                context: context,
-                focusNode: _passwordFocus,
-                password: true),
-            SizedBox(height: 16),
-            AppButton("Login", onPressed: _onClickLogin)
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -85,6 +96,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onClickLogin() async {
+    setState(() {
+      _showProgress = true;
+    });
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -93,10 +107,14 @@ class _LoginPageState extends State<LoginPage> {
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
     final ApiResponse response = await LoginApi.login(login, password);
+    setState(() {
+      _showProgress = false;
+    });
     if (response.isSuccess()) {
       push(context, HomePage());
     } else {
-      showCustomDialog(context, title: "Cars", message: response.error, onOk: () {
+      showCustomDialog(context, title: "Cars", message: response.error,
+          onOk: () {
         Navigator.pop(context);
       });
       print("Incorrect password");
