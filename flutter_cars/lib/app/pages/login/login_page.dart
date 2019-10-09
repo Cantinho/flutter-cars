@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
-import 'package:flutter_cars/app/pages/login/user.dart';
+import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
+import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/login_api.dart';
 
 class LoginPage extends StatefulWidget {
@@ -91,10 +92,13 @@ class _LoginPageState extends State<LoginPage> {
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
-    final User logged = await LoginApi.login(login, password);
-    if (logged != null) {
+    final ApiResponse response = await LoginApi.login(login, password);
+    if (response.isSuccess()) {
       push(context, HomePage());
     } else {
+      showCustomDialog(context, title: "Cars", message: response.error, onOk: () {
+        Navigator.pop(context);
+      });
       print("Incorrect password");
     }
   }
