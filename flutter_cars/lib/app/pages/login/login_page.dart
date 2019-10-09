@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
+import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
@@ -90,12 +91,11 @@ class _LoginPageState extends State<LoginPage> {
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
-    bool logged = await LoginApi.login(login, password);
-    if(logged) {
+    final User logged = await LoginApi.login(login, password);
+    if (logged != null) {
       push(context, HomePage());
     } else {
       print("Incorrect password");
     }
-
   }
 }

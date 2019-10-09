@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:http/http.dart' as http;
 
 class LoginApi {
@@ -11,7 +12,7 @@ class LoginApi {
   /// json { "username" : "user", "password" : "123"}
   /// json { "username" : "admin", "password" : "123"}
   ///
-  static Future<bool> login(String login, String password) async {
+  static Future<User> login(String login, String password) async {
     final url = '$_BASE_URL_CARS/login';
     final body = json.encode({
       "username": login,
@@ -25,11 +26,8 @@ class LoginApi {
     print('Response body: ${response.body}');
 
     final Map mapResponse = json.decode(response.body);
-    final String nome = mapResponse["nome"];
-    print("Nome:$nome");
-    final String email = mapResponse["email"];
-    print("E-mail:$email");
-
-    return true;
+    final user = User.fromJson(mapResponse);
+    print(">>> $user");
+    return user;
   }
 }
