@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/home/home_page.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
+import 'package:flutter_cars/data/services/login_api.dart';
 
 class LoginPage extends StatefulWidget {
-  static const MIN_PASSWORD_LENGTH = 4;
+  static const MIN_PASSWORD_LENGTH = 3;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -79,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  void _onClickLogin() {
+  void _onClickLogin() async {
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -87,5 +90,12 @@ class _LoginPageState extends State<LoginPage> {
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
+    bool logged = await LoginApi.login(login, password);
+    if(logged) {
+      push(context, HomePage());
+    } else {
+      print("Incorrect password");
+    }
+
   }
 }
