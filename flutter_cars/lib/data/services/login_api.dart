@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 
 class LoginApi {
@@ -24,6 +23,12 @@ class LoginApi {
     var response = await http.post(url, body: body, headers: headers);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
+
+    final Map mapResponse = json.decode(response.body);
+    final String nome = mapResponse["nome"];
+    print("Nome:$nome");
+    final String email = mapResponse["email"];
+    print("E-mail:$email");
 
     return true;
   }
