@@ -4,6 +4,7 @@ import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
+import 'package:flutter_cars/app/widgets/drawer_list.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/login_api.dart';
 
@@ -23,6 +24,12 @@ class _LoginPageState extends State<LoginPage> {
 
   final _passwordFocus = FocusNode();
 
+  bool _showProgress = false;
+
+  bool _isLoginButtonEnabled() {
+    return !_showProgress;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,39 +37,49 @@ class _LoginPageState extends State<LoginPage> {
         title: Text("Cars"),
       ),
       body: _body(),
+      drawer: DrawerList(),
     );
   }
 
   _body() {
-    return Form(
-      key: _formKey,
-      child: Container(
-        margin: EdgeInsets.all(16),
-        child: ListView(
-          children: <Widget>[
-            AppInputText(
-              'E-mail',
-              "Insert your best e-mail",
-              controller: _tLoginController,
-              validator: _validateLogin,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              context: context,
-              nextFocus: _passwordFocus
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        _showProgress
+            ? LinearProgressIndicator(
+                backgroundColor: Colors.deepPurple,
+              )
+            : Container(),
+        Expanded(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              margin: EdgeInsets.all(16),
+              child: ListView(
+                children: <Widget>[
+                  AppInputText('E-mail', "Insert your best e-mail",
+                      controller: _tLoginController,
+                      validator: _validateLogin,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      context: context,
+                      nextFocus: _passwordFocus),
+                  SizedBox(height: 8),
+                  AppInputText('Password', "Insert a string password",
+                      controller: _tPasswordController,
+                      validator: _validatePassword,
+                      keyboardType: TextInputType.number,
+                      context: context,
+                      focusNode: _passwordFocus,
+                      password: true),
+                  SizedBox(height: 16),
+                  AppButton("Login", onPressed: _isLoginButtonEnabled() ? _onClickLogin : null)
+                ],
+              ),
             ),
-            SizedBox(height: 8),
-            AppInputText('Password', "Insert a string password",
-                controller: _tPasswordController,
-                validator: _validatePassword,
-                keyboardType: TextInputType.number,
-                context: context,
-                focusNode: _passwordFocus,
-                password: true),
-            SizedBox(height: 16),
-            AppButton("Login", onPressed: _onClickLogin)
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -89,14 +106,21 @@ class _LoginPageState extends State<LoginPage> {
     if (!isValid) {
       return;
     }
+    setState(() {
+      _showProgress = true;
+    });
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
     final ApiResponse response = await LoginApi.login(login, password);
+    setState(() {
+      _showProgress = false;
+    });
     if (response.isSuccess()) {
-      push(context, HomePage());
+      push(context, HomePage(), replace: true);
     } else {
-      showCustomDialog(context, title: "Cars", message: response.error, onOk: () {
+      showCustomDialog(context, title: "Cars", message: response.error,
+          onOk: () {
         Navigator.pop(context);
       });
       print("Incorrect password");
