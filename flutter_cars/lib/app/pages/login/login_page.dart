@@ -4,6 +4,7 @@ import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
+import 'package:flutter_cars/app/widgets/drawer_list.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/login_api.dart';
 
@@ -25,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _showProgress = false;
 
+  bool _isLoginButtonEnabled() {
+    return !_showProgress;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         title: Text("Cars"),
       ),
       body: _body(),
+      drawer: DrawerList(),
     );
   }
 
@@ -67,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       focusNode: _passwordFocus,
                       password: true),
                   SizedBox(height: 16),
-                  AppButton("Login", onPressed: _onClickLogin)
+                  AppButton("Login", onPressed: _isLoginButtonEnabled() ? _onClickLogin : null)
                 ],
               ),
             ),
@@ -96,13 +102,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onClickLogin() async {
-    setState(() {
-      _showProgress = true;
-    });
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
     }
+    setState(() {
+      _showProgress = true;
+    });
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
@@ -111,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
       _showProgress = false;
     });
     if (response.isSuccess()) {
-      push(context, HomePage());
+      push(context, HomePage(), replace: true);
     } else {
       showCustomDialog(context, title: "Cars", message: response.error,
           onOk: () {
