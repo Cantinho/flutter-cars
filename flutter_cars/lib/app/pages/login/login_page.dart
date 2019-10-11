@@ -4,7 +4,6 @@ import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
-import 'package:flutter_cars/app/widgets/drawer_list.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/login_api.dart';
 
@@ -37,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
         title: Text("Cars"),
       ),
       body: _body(),
-      drawer: DrawerList(),
     );
   }
 
