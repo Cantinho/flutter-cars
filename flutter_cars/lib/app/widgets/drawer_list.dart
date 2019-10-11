@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/login/login_page.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 
 class DrawerList extends StatelessWidget {
   @override
@@ -57,10 +59,7 @@ class DrawerList extends StatelessWidget {
                   leading: Icon(Icons.exit_to_app, color: Colors.grey),
                   title: Text("Logout", style: TextStyle(color: Colors.grey)),
                   trailing: Icon(Icons.arrow_forward, color: Colors.grey),
-                  onTap: () {
-                    print("Item 3");
-                    Navigator.pop(context);
-                  },
+                  onTap: () => _onClickLogout(context),
                 ),
               ],
             ),
@@ -68,5 +67,9 @@ class DrawerList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _onClickLogout(BuildContext context) {
+    push(context, LoginPage(), replace: true);
   }
 }
