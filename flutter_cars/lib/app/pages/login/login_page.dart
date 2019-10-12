@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
+import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
@@ -27,6 +28,17 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoginButtonEnabled() {
     return !_showProgress;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final Future<User> future = User.get();
+    future.then((user) {
+      if(user != null) {
+        push(context, HomePage(), replace: true);
+      }
+    });
   }
 
   @override

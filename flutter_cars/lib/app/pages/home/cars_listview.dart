@@ -3,7 +3,6 @@ import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/services/models/Car.dart';
 
 class CarsListView extends StatefulWidget {
-
   final CarType carType;
 
   const CarsListView({Key key, this.carType}) : super(key: key);
@@ -12,10 +11,11 @@ class CarsListView extends StatefulWidget {
   _CarsListViewState createState() => _CarsListViewState();
 }
 
-class _CarsListViewState extends State<CarsListView> with AutomaticKeepAliveClientMixin<CarsListView>{
+class _CarsListViewState extends State<CarsListView>
+    with AutomaticKeepAliveClientMixin<CarsListView> {
 
   @override
-  bool get wantKeepAlive => null;
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +68,13 @@ class _CarsListViewState extends State<CarsListView> with AutomaticKeepAliveClie
                   Center(
                     child: car.urlPhoto != null
                         ? Image.network(
-                      car.urlPhoto,
-                      width: 250,
-                    )
+                            car.urlPhoto,
+                            width: 250,
+                          )
                         : Image.network(
-                      "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
-                      width: 150,
-                    ),
+                            "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+                            width: 150,
+                          ),
                   ),
                   Text(
                     car.name ?? "Pistons",
