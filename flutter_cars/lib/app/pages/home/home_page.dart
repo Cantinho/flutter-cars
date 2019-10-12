@@ -53,7 +53,9 @@ class _HomePageState extends State<HomePage>
           CarsListView(
             carType: CarType.classic,
           ),
-          CarsListView(carType: CarType.sport),
+          CarsListView(
+            carType: CarType.sport,
+          ),
           CarsListView(
             carType: CarType.lux,
           ),

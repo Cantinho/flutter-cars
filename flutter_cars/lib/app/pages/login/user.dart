@@ -1,4 +1,9 @@
+import 'dart:convert' as convert;
+
+import 'package:flutter_cars/app/utils/prefs.dart';
+
 class User {
+  String id;
   String username;
   String name;
   String email;
@@ -6,26 +11,46 @@ class User {
   String photoUrl;
   List<String> roles;
 
-  User(this.username, this.name, this.email, this.token, this.photoUrl,
+  User(this.id, this.username, this.name, this.email, this.token, this.photoUrl,
       this.roles);
 
   User.fromJson(Map<String, dynamic> map)
-      : username = map["login"],
+      : id = map['id'],
+        username = map["login"],
         name = map["nome"],
         email = map["email"],
         token = map["token"],
         photoUrl = map["urlFoto"],
-        roles = _getRoles(map);
+        roles = map["roles"].cast<String>();
 
-  static List<String> _getRoles(final Map<String, dynamic> map) {
-    return map["roles"] != null
-        ? map["roles"].map<String>((role) => role.toString()).toList()
-        : null;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['login'] = this.username;
+    data['nome'] = this.name;
+    data['email'] = this.email;
+    data['urlFoto'] = this.photoUrl;
+    data['token'] = this.token;
+    data['roles'] = this.roles;
+    return data;
   }
 
   @override
   String toString() {
-    return 'User{username: $username, name: $name, email: $email, token: $token, photoUrl: $photoUrl, roles: $roles}';
+    return 'User{id: $id, String: $String, name: $name, email: $email, token: $token, photoUrl: $photoUrl, roles: $roles}';
+  }
+
+  void save() {
+    final Map map = toJson();
+    final String json = convert.json.encode(map);
+    Prefs.setString("user.prefs", json);
+  }
+
+  static Future<User> get() async {
+    final String json = await Prefs.getString("user.prefs");
+    final Map map = convert.json.decode(json);
+    final User user = User.fromJson(map);
+    return user;
   }
 
 }
