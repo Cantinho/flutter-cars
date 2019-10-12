@@ -3,7 +3,7 @@ import 'dart:convert' as convert;
 import 'package:flutter_cars/app/utils/prefs.dart';
 
 class User {
-  String id;
+  int id;
   String username;
   String name;
   String email;
