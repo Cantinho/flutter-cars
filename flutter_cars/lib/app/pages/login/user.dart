@@ -48,9 +48,16 @@ class User {
 
   static Future<User> get() async {
     final String json = await Prefs.getString("user.prefs");
+    if(json.isEmpty) {
+      return null;
+    }
     final Map map = convert.json.decode(json);
     final User user = User.fromJson(map);
     return user;
+  }
+
+  static void clear() {
+    Prefs.setString("user.prefs", "");
   }
 
 }
