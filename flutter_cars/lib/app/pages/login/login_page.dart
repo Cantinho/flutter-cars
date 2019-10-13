@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
@@ -15,8 +17,11 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+
+  final _streamController = StreamController<bool>();
 
   final _tLoginController = TextEditingController();
 
@@ -24,18 +29,12 @@ class _LoginPageState extends State<LoginPage> {
 
   final _passwordFocus = FocusNode();
 
-  bool _showProgress = false;
-
-  bool _isLoginButtonEnabled() {
-    return !_showProgress;
-  }
-
   @override
   void initState() {
     super.initState();
     final Future<User> future = User.get();
     future.then((user) {
-      if(user != null) {
+      if (user != null) {
         push(context, HomePage(), replace: true);
       }
     });
@@ -52,44 +51,50 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _body() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        _showProgress
-            ? LinearProgressIndicator(
-                backgroundColor: Colors.deepPurple,
-              )
-            : Container(),
-        Expanded(
-          child: Form(
-            key: _formKey,
-            child: Container(
-              margin: EdgeInsets.all(16),
-              child: ListView(
-                children: <Widget>[
-                  AppInputText('E-mail', "Insert your best e-mail",
-                      controller: _tLoginController,
-                      validator: _validateLogin,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      context: context,
-                      nextFocus: _passwordFocus),
-                  SizedBox(height: 8),
-                  AppInputText('Password', "Insert a string password",
-                      controller: _tPasswordController,
-                      validator: _validatePassword,
-                      keyboardType: TextInputType.number,
-                      context: context,
-                      focusNode: _passwordFocus,
-                      password: true),
-                  SizedBox(height: 16),
-                  AppButton("Login", onPressed: _isLoginButtonEnabled() ? _onClickLogin : null)
-                ],
+    return StreamBuilder<bool>(
+      stream: _streamController.stream,
+      initialData: false,
+      builder: (context, snapshot) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            snapshot.data
+                ? LinearProgressIndicator(
+                    backgroundColor: Colors.deepPurple,
+                  )
+                : Container(),
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  margin: EdgeInsets.all(16),
+                  child: ListView(
+                    children: <Widget>[
+                      AppInputText('E-mail', "Insert your best e-mail",
+                          controller: _tLoginController,
+                          validator: _validateLogin,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          context: context,
+                          nextFocus: _passwordFocus),
+                      SizedBox(height: 8),
+                      AppInputText('Password', "Insert a string password",
+                          controller: _tPasswordController,
+                          validator: _validatePassword,
+                          keyboardType: TextInputType.number,
+                          context: context,
+                          focusNode: _passwordFocus,
+                          password: true),
+                      SizedBox(height: 16),
+                      AppButton("Login", onPressed: _onClickLogin)
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      }
     );
   }
 
@@ -116,16 +121,12 @@ class _LoginPageState extends State<LoginPage> {
     if (!isValid) {
       return;
     }
-    setState(() {
-      _showProgress = true;
-    });
+    _streamController.sink.add(true);
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
     final ApiResponse response = await LoginApi.login(login, password);
-    setState(() {
-      _showProgress = false;
-    });
+    _streamController.sink.add(false);
     if (response.isSuccess()) {
       push(context, HomePage(), replace: true);
     } else {
@@ -135,5 +136,11 @@ class _LoginPageState extends State<LoginPage> {
       });
       print("Incorrect password");
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamController.close();
   }
 }

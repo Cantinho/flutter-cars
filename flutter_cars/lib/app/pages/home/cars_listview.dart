@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/services/models/Car.dart';
 
@@ -14,6 +18,8 @@ class CarsListView extends StatefulWidget {
 class _CarsListViewState extends State<CarsListView>
     with AutomaticKeepAliveClientMixin<CarsListView> {
 
+  final _streamController = StreamController<List<Car>>();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -23,16 +29,25 @@ class _CarsListViewState extends State<CarsListView>
     return _body();
   }
 
-  _body() {
-    final Future<List<Car>> carsFuture = CarApi.fetchCars(widget.carType);
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
-    return FutureBuilder(
-      future: carsFuture,
+  _loadData() async {
+    final List<Car> cars = await CarApi.fetchCars(widget.carType);
+    _streamController.sink.add(cars);
+  }
+
+  _body() {
+    return StreamBuilder(
+      stream: _streamController.stream,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if(snapshot.hasError) {
           return Center(
             child: Text(
-              "An error occurred while fetching data from server",
+              "It was not available fetch cars",
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 22,
@@ -40,7 +55,8 @@ class _CarsListViewState extends State<CarsListView>
             ),
           );
         }
-        if (!snapshot.hasData) {
+
+        if(!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -76,6 +92,9 @@ class _CarsListViewState extends State<CarsListView>
                             width: 150,
                           ),
                   ),
+                  SizedBox(
+                    height: 16,
+                  ),
                   Text(
                     car.name ?? "Pistons",
                     maxLines: 1,
@@ -91,11 +110,11 @@ class _CarsListViewState extends State<CarsListView>
                       children: <Widget>[
                         FlatButton(
                           child: const Text('DETAILS'),
-                          onPressed: () {},
+                          onPressed: () => _onClickCarDetails(car),
                         ),
                         FlatButton(
                           child: const Text('SHARE'),
-                          onPressed: () {},
+                          onPressed: () => _onClickCarShare(car),
                         )
                       ],
                     ),
@@ -108,4 +127,10 @@ class _CarsListViewState extends State<CarsListView>
       ),
     );
   }
+
+  _onClickCarDetails(final Car car) {
+    push(context, CarDetailsPage(car));
+  }
+
+  _onClickCarShare(final Car car) {}
 }
