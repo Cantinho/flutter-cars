@@ -11,8 +11,12 @@ class CarsBloc {
   Stream<List<Car>> get stream => _streamController.stream;
 
   fetch(final CarType carType) async {
-    final List<Car> cars = await CarApi.fetchCars(carType);
-    _streamController.add(cars);
+    try {
+      final List<Car> cars = await CarApi.fetchCars(carType);
+      _streamController.add(cars);
+    } catch (error) {
+      _streamController.addError(error);
+    }
   }
 
   void dispose() {
