@@ -1,17 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
+import 'package:flutter_cars/app/widgets/app_text.dart';
+import 'package:flutter_cars/data/services/LoripsumApi.dart';
 import 'package:flutter_cars/data/services/models/Car.dart';
 
-class CarDetailsPage extends StatelessWidget {
-
+class CarDetailsPage extends StatefulWidget {
   Car _car;
 
+
   CarDetailsPage(this._car);
+
+  @override
+  _CarDetailsPageState createState() => _CarDetailsPageState();
+}
+
+class _CarDetailsPageState extends State<CarDetailsPage> {
+  final _carDetailsBloc = CarDetailsBloc();
+  
+  @override
+  void initState() {
+    super.initState();
+    _carDetailsBloc.fetch();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_car.name ?? "Pistons"),
+        title: Text(widget._car.name ?? "Pistons"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.place),
+            onPressed: _onClickMap,
+          ),
+          IconButton(
+            icon: Icon(Icons.videocam),
+            onPressed: _onClickVideo,
+          ),
+          PopupMenuButton<String>(
+            onSelected: (String value) => _onClickPopupMenuItem(value),
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: "Edit",
+                  child: Text("Edit"),
+                ),
+                PopupMenuItem(
+                  value: "Delete",
+                  child: Text("Delete"),
+                ),
+                PopupMenuItem(
+                  value: "Share",
+                  child: Text("Share"),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: _body(),
     );
@@ -20,14 +65,103 @@ class CarDetailsPage extends StatelessWidget {
   _body() {
     return Container(
       padding: EdgeInsets.all(16),
-      child: _car.urlPhoto != null
-          ? Image.network(
-        _car.urlPhoto,
-      )
-          : Image.network(
-        "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+      child: ListView(
+        children: <Widget>[
+          widget._car.urlPhoto != null
+              ? Image.network(
+            widget._car.urlPhoto,
+          )
+              : Image.network(
+            "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+          ),
+          _blockOne(),
+          Divider(),
+          _blockTwo(),
+        ],
       ),
     );
   }
 
+  Row _blockOne() {
+    return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                text(widget._car.name, fontSize: 20, bold: true),
+                text(widget._car.type, fontSize: 16),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
+                  onPressed: _onClickFavorite,
+                ),
+                IconButton(
+                  icon: Icon(Icons.share, size: 40,),
+                  onPressed: _onClickShare,
+                ),
+              ],
+            ),
+          ],
+        );
+  }
+
+  _blockTwo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(height: 20,),
+        text(widget._car.description, fontSize: 16, bold: true),
+        SizedBox(height: 20,),
+        StreamBuilder<String>(
+          stream: _carDetailsBloc.stream,
+          builder: (context, snapshot) {
+            if(!snapshot.hasData) {
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  Center(child: CircularProgressIndicator(),),
+                ],
+              );
+            }
+            return text(snapshot.data, fontSize: 16);
+          },
+        ),
+      ],
+    );
+  }
+
+  void _onClickMap() {}
+
+  void _onClickVideo() {}
+
+  _onClickPopupMenuItem(final String value) {
+    switch(value) {
+      case "Edit":
+        print("Edit!!!");
+        break;
+      case "Delete":
+        print("Delete!!!");
+        break;
+      case "Share":
+        print("Share!!!");
+        break;
+    }
+  }
+
+  void _onClickFavorite() {
+
+  }
+
+  void _onClickShare() {
+  }
+
+  @override
+  void dispose() {
+    _carDetailsBloc.dispose();
+    super.dispose();
+  }
 }

@@ -15,7 +15,9 @@ class CarsBloc {
       final List<Car> cars = await CarApi.fetchCars(carType);
       _streamController.add(cars);
     } catch (error) {
-      _streamController.addError(error);
+      if(!_streamController.isClosed) {
+        _streamController.addError(error);
+      }
     }
   }
 
