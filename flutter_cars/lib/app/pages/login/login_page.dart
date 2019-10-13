@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
+import 'package:flutter_cars/app/pages/login/login_bloc.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
-import 'package:flutter_cars/data/services/login_api.dart';
 
 class LoginPage extends StatefulWidget {
   static const MIN_PASSWORD_LENGTH = 3;
@@ -21,13 +21,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _streamController = StreamController<bool>();
-
   final _tLoginController = TextEditingController();
 
   final _tPasswordController = TextEditingController();
 
   final _passwordFocus = FocusNode();
+
+  final _bloc = LoginBloc();
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _body() {
     return StreamBuilder<bool>(
-      stream: _streamController.stream,
+      stream: _bloc.stream,
       initialData: false,
       builder: (context, snapshot) {
         return Column(
@@ -121,12 +121,11 @@ class _LoginPageState extends State<LoginPage> {
     if (!isValid) {
       return;
     }
-    _streamController.sink.add(true);
+
     final String login = _tLoginController.text;
     final String password = _tPasswordController.text;
     print("Login :$login, Password:$password");
-    final ApiResponse response = await LoginApi.login(login, password);
-    _streamController.sink.add(false);
+    final ApiResponse response = await _bloc.login(login, password);
     if (response.isSuccess()) {
       push(context, HomePage(), replace: true);
     } else {
@@ -141,6 +140,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    _streamController.close();
+    _bloc.dispose();
   }
 }

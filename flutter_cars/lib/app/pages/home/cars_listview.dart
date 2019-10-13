@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
+import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/services/models/Car.dart';
@@ -18,7 +19,9 @@ class CarsListView extends StatefulWidget {
 class _CarsListViewState extends State<CarsListView>
     with AutomaticKeepAliveClientMixin<CarsListView> {
 
-  final _streamController = StreamController<List<Car>>();
+  final _bloc = CarsBloc();
+
+  CarType get _carType => widget.carType;
 
   @override
   bool get wantKeepAlive => true;
@@ -32,17 +35,13 @@ class _CarsListViewState extends State<CarsListView>
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _bloc.fetch(_carType);
   }
 
-  _loadData() async {
-    final List<Car> cars = await CarApi.fetchCars(widget.carType);
-    _streamController.sink.add(cars);
-  }
 
   _body() {
     return StreamBuilder(
-      stream: _streamController.stream,
+      stream: _bloc.stream,
       builder: (context, snapshot) {
         if(snapshot.hasError) {
           return Center(
@@ -133,4 +132,10 @@ class _CarsListViewState extends State<CarsListView>
   }
 
   _onClickCarShare(final Car car) {}
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.dispose();
+  }
 }
