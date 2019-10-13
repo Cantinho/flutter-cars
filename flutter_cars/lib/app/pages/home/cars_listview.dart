@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
+import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/services/models/Car.dart';
 
@@ -18,7 +19,6 @@ class CarsListView extends StatefulWidget {
 
 class _CarsListViewState extends State<CarsListView>
     with AutomaticKeepAliveClientMixin<CarsListView> {
-
   final _bloc = CarsBloc();
 
   CarType get _carType => widget.carType;
@@ -38,24 +38,17 @@ class _CarsListViewState extends State<CarsListView>
     _bloc.fetch(_carType);
   }
 
-
   _body() {
     return StreamBuilder(
       stream: _bloc.stream,
       builder: (context, snapshot) {
-        if(snapshot.hasError) {
-          return Center(
-            child: Text(
-              "It was not available fetch cars",
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 22,
-              ),
-            ),
+        if (snapshot.hasError) {
+          return AppTextError(
+            "It was not available fetch cars",
           );
         }
 
-        if(!snapshot.hasData) {
+        if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -101,7 +94,7 @@ class _CarsListViewState extends State<CarsListView>
                     style: TextStyle(fontSize: 25),
                   ),
                   Text(
-                    "description...",
+                    car.description ?? "description...",
                     style: TextStyle(fontSize: 14),
                   ),
                   ButtonTheme.bar(

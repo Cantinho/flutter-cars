@@ -86,7 +86,12 @@ class _LoginPageState extends State<LoginPage> {
                           focusNode: _passwordFocus,
                           password: true),
                       SizedBox(height: 16),
-                      AppButton("Login", onPressed: _onClickLogin)
+                      StreamBuilder<Object>(
+                        stream: null,
+                        builder: (context, snapshot) {
+                          return AppButton("Login", onPressed: _onClickLogin);
+                        }
+                      )
                     ],
                   ),
                 ),
@@ -139,7 +144,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    super.dispose();
     _bloc.dispose();
+    _tLoginController.dispose();
+    _tPasswordController.dispose();
+    super.dispose();
   }
 }
