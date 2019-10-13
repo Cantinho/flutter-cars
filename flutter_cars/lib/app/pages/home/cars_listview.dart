@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
@@ -54,7 +52,10 @@ class _CarsListViewState extends State<CarsListView>
           );
         }
         final List<Car> cars = snapshot.data;
-        return _listView(cars);
+        return RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: _listView(cars),
+        );
       },
     );
   }
@@ -130,5 +131,12 @@ class _CarsListViewState extends State<CarsListView>
   void dispose() {
     super.dispose();
     _bloc.dispose();
+  }
+
+  Future<void> _onRefresh() {
+    return Future.delayed(Duration(seconds: 3), () {
+      print("onRefresh: finished");
+      _bloc.fetch(_carType);
+    });
   }
 }
