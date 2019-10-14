@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter_cars/app/pages/login/user.dart';
-import 'package:flutter_cars/data/services/models/Car.dart';
+import 'package:flutter_cars/data/repositories/car_dao.dart';
+import 'package:flutter_cars/data/services/models/car.dart';
+import 'package:flutter_cars/data/services/models/car_response.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -34,7 +36,11 @@ class CarApi {
     final String json = response.body;
 
     final List list = convert.json.decode(json);
-    final List<Car> cars = list.map<Car>((map) => Car.fromJson(map)).toList();
+    final List<Car> cars = list.map<Car>((map) => CarResponse.parseFrom(CarResponse.fromJson(map))).toList();
+
+    final dao = CarDAO();
+    cars.forEach(dao.save);
+
     return cars;
   }
 }

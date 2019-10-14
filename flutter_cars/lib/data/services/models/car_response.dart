@@ -1,5 +1,7 @@
 
-class Car {
+import 'package:flutter_cars/data/services/models/car.dart';
+
+class CarResponse {
   int id;
   String name;
   String type;
@@ -9,7 +11,7 @@ class Car {
   String latitude;
   String longitude;
 
-  Car(
+  CarResponse(
       {this.id,
         this.name,
         this.type,
@@ -19,7 +21,7 @@ class Car {
         this.latitude,
         this.longitude});
 
-  Car.fromJson(Map<String, dynamic> json) {
+  CarResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['nome'];
     type = json['tipo'];
@@ -41,5 +43,20 @@ class Car {
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
     return data;
+  }
+
+  static Car parseFrom(CarResponse carResponse) {
+    final Car car = Car(
+        id: carResponse.id,
+        name: carResponse.name,
+        type: carResponse.type,
+        description: carResponse.description,
+        urlPhoto: carResponse.urlPhoto,
+        urlVideo: carResponse.urlVideo,
+        latitude: carResponse.latitude,
+        longitude: carResponse.longitude
+    );
+
+    return car;
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter_cars/app/pages/home/cars_listview.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
-import 'package:flutter_cars/data/services/models/Car.dart';
+import 'package:flutter_cars/data/services/models/car.dart';
 
 class CarsPage extends StatefulWidget {
   final CarType carType;
