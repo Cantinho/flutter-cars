@@ -7,7 +7,6 @@ import 'package:flutter_cars/app/utils/nav.dart';
 class DrawerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     Future<User> userFuture = User.get();
 
     return SafeArea(
@@ -29,9 +28,16 @@ class DrawerList extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.star, color: Colors.grey),
-                  title: Text("Favorites", style: TextStyle(color: Colors.grey)),
-                  subtitle: Text("more info...", style: TextStyle(color: Colors.grey),),
-                  trailing: Icon(Icons.arrow_forward, color: Colors.grey,),
+                  title:
+                      Text("Favorites", style: TextStyle(color: Colors.grey)),
+                  subtitle: Text(
+                    "more info...",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.grey,
+                  ),
                   onTap: () {
                     print("Item 1");
                     Navigator.pop(context);
@@ -40,7 +46,8 @@ class DrawerList extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.help, color: Colors.grey),
                   title: Text("Help", style: TextStyle(color: Colors.grey)),
-                  subtitle: Text("more info...", style: TextStyle(color: Colors.grey)),
+                  subtitle: Text("more info...",
+                      style: TextStyle(color: Colors.grey)),
                   trailing: Icon(Icons.arrow_forward, color: Colors.grey),
                   onTap: () {
                     print("Item 2");
@@ -63,25 +70,32 @@ class DrawerList extends StatelessWidget {
 
   UserAccountsDrawerHeader _header(final User user) {
     return UserAccountsDrawerHeader(
-                  margin: EdgeInsets.only(bottom: 0.0),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                  ),
-                  accountName: Text(
-                    user == null ? "" : user.name?? "",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                  accountEmail: Text( user == null ? "" : user.email?? ""),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: (user != null && user.photoUrl != null) ? CachedNetworkImage(imageUrl: user.photoUrl) : AssetImage("assets/images/tyre64.png"),
-                    backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
-                    //Use below to load image through network
-                    //backgroundImage: NetworkImage("https://avatars1.githubusercontent.com/u/5253073?s=460&v=4"),
-                  ),
-                );
+      margin: EdgeInsets.only(bottom: 0.0),
+      decoration: BoxDecoration(
+        color: Colors.black54,
+      ),
+      accountName: Text(
+        user == null ? "" : user.name ?? "",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
+      ),
+      accountEmail: Text(user == null ? "" : user.email ?? ""),
+
+
+      currentAccountPicture: (user != null && user.photoUrl != null) ?
+      CircleAvatar(
+        child: CachedNetworkImage(imageUrl: user.photoUrl),
+        backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
+        //Use below to load image through network
+        //backgroundImage: NetworkImage("https://avatars1.githubusercontent.com/u/5253073?s=460&v=4"),
+      ) :
+      CircleAvatar(
+        backgroundImage: AssetImage("assets/images/tyre64.png"),
+        backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
+      ),
+    );
   }
 
   _onClickLogout(BuildContext context) {
