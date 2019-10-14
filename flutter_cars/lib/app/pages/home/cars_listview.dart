@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
@@ -29,14 +30,15 @@ class CarsListView extends StatelessWidget {
                 children: <Widget>[
                   Center(
                     child: car.urlPhoto != null
-                        ? Image.network(
-                      car.urlPhoto,
-                      width: 250,
-                    )
-                        : Image.network(
-                      "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
-                      width: 150,
-                    ),
+                        ? CachedNetworkImage(
+                            imageUrl: car.urlPhoto,
+                            width: 250,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl:
+                                "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+                            width: 150,
+                          ),
                   ),
                   SizedBox(
                     height: 16,

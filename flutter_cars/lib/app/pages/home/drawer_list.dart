@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/login/login_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
@@ -75,7 +76,7 @@ class DrawerList extends StatelessWidget {
                   ),
                   accountEmail: Text( user == null ? "" : user.email?? ""),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: (user != null && user.photoUrl != null) ? NetworkImage(user.photoUrl) : AssetImage("assets/images/tyre64.png"),
+                    backgroundImage: (user != null && user.photoUrl != null) ? CachedNetworkImage(imageUrl: user.photoUrl) : AssetImage("assets/images/tyre64.png"),
                     backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
                     //Use below to load image through network
                     //backgroundImage: NetworkImage("https://avatars1.githubusercontent.com/u/5253073?s=460&v=4"),
