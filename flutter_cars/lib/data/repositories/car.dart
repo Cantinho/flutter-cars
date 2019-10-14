@@ -1,5 +1,5 @@
 
-import 'package:flutter_cars/data/services/models/entity.dart';
+import 'package:flutter_cars/app/utils/sql/entity.dart';
 
 class Car extends Entity {
   int id;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_listview.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
@@ -7,20 +8,14 @@ import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 
-class CarsPage extends StatefulWidget {
-  final CarType carType;
-
-  const CarsPage({Key key, this.carType}) : super(key: key);
-
+class FavoriteCarsPage extends StatefulWidget {
   @override
-  _CarsPageState createState() => _CarsPageState();
+  _FavoriteCarsPageState createState() => _FavoriteCarsPageState();
 }
 
-class _CarsPageState extends State<CarsPage>
-    with AutomaticKeepAliveClientMixin<CarsPage> {
-  final _bloc = CarsBloc();
-
-  CarType get _carType => widget.carType;
+class _FavoriteCarsPageState extends State<FavoriteCarsPage>
+    with AutomaticKeepAliveClientMixin<FavoriteCarsPage> {
+  final _bloc = FavoriteCarsBloc();
 
   @override
   bool get wantKeepAlive => true;
@@ -34,7 +29,7 @@ class _CarsPageState extends State<CarsPage>
   @override
   void initState() {
     super.initState();
-    _bloc.fetch(_carType);
+    _bloc.fetch();
   }
 
   _body() {
@@ -48,7 +43,7 @@ class _CarsPageState extends State<CarsPage>
               children: <Widget>[
                 ListView(),
                 AppTextError(
-                  "It was not available fetch cars.",
+                  "No favorite car.",
                 )
               ],
             ),
@@ -63,14 +58,14 @@ class _CarsPageState extends State<CarsPage>
         final List<Car> cars = snapshot.data ?? [];
         return RefreshIndicator(
           onRefresh: _onRefresh,
-          child: cars.isNotEmpty ? CarsListView(cars) :
+          child: cars.isNotEmpty ? CarsListView(cars, favoritePage: true,) :
           Stack(
             children: <Widget>[
               ListView(),
               Container(
                 margin: EdgeInsets.only(left: 16, right: 16),
                 child: AppTextError(
-                  "It was not available fetch cars without internet.",
+                  "No favorite car.",
                 ),
               )
             ],
@@ -89,7 +84,7 @@ class _CarsPageState extends State<CarsPage>
   Future<void> _onRefresh() {
     return Future.delayed(Duration(seconds: 3), () {
       print("onRefresh: finished");
-      _bloc.fetch(_carType);
+      _bloc.fetch();
     });
   }
 }

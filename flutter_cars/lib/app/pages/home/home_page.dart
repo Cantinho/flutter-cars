@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cars/app/pages/home/cars_listview.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_page.dart';
 import 'package:flutter_cars/app/pages/home/drawer_list.dart';
 import 'package:flutter_cars/app/utils/prefs.dart';
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage>
   }
 
   _initTabs() async {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.index = await Prefs.getInt(("tabIdx"));
     _tabController.addListener(() {
       Prefs.setInt("tabIdx", _tabController.index);
@@ -33,17 +33,25 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       appBar: AppBar(
         title: Text('Carros'),
+        backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
         bottom: TabBar(
           controller: _tabController,
           tabs: <Widget>[
             Tab(
-              text: "Classics",
+              text: "Classic",
+              icon: Icon(Icons.directions_car),
             ),
             Tab(
-              text: "Sportives",
+              text: "Sportive",
+              icon: Icon(Icons.stars),
             ),
             Tab(
               text: "Lux",
+              icon: Icon(Icons.star),
+            ),
+            Tab(
+              text: "Favorite",
+              icon: Icon(Icons.favorite),
             ),
           ],
         ),
@@ -60,6 +68,7 @@ class _HomePageState extends State<HomePage>
           CarsPage(
             carType: CarType.lux,
           ),
+          FavoriteCarsPage(),
         ],
       ),
       drawer: DrawerList(),
