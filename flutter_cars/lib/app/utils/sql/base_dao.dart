@@ -1,9 +1,7 @@
-
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_cars/data/repositories/database_helper.dart';
-import 'package:flutter_cars/data/services/models/car.dart';
-import 'package:flutter_cars/data/services/models/entity.dart';
+import 'package:flutter_cars/app/utils/sql/database_helper.dart';
+import 'package:flutter_cars/data/repositories/car.dart';
+import 'package:flutter_cars/app/utils/sql/entity.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 abstract class BaseDAO<T extends Entity> {
@@ -22,19 +20,19 @@ abstract class BaseDAO<T extends Entity> {
     return id;
   }
 
-  Future<List<T>> findAll() async {
+  Future<List<T>> query(final String sql, [List<dynamic> arguments]) async {
     final databaseClient = await database;
-    final list = await databaseClient.rawQuery("select * from $tableName");
-    return list.map<T>((json) => fromMap(json)).toList();
+    final list =  await databaseClient.rawQuery(sql, arguments);
+    return list.map<T>((map) => fromMap(map)).toList();
+  }
+
+  Future<List<T>> findAll() {
+    return query("select * from $tableName");
   }
 
   Future<T> findById(final int id) async {
-    final databaseClient = await database;
-    final list = await databaseClient.rawQuery("select * from $tableName where id=?", [id]);
-    if(list.length > 0) {
-      return fromMap(list.first);
-    }
-    return null;
+    final List<T> list = await query("select * from $tableName where id=?", [id]);
+    return list.length > 0 ? list.first : null;
   }
 
   Future<bool> exists(final int id) async {

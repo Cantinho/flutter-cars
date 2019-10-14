@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter_cars/app/utils/network.dart' as networkUtils;
 import 'package:flutter_cars/data/repositories/car_dao.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
-import 'package:flutter_cars/data/services/models/car.dart';
+import 'package:flutter_cars/data/repositories/car.dart';
 
 class CarsBloc {
 

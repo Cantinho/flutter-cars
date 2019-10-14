@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
-import 'package:flutter_cars/data/services/models/car.dart';
+import 'package:flutter_cars/data/repositories/car.dart';
 
 class CarDetailsPage extends StatefulWidget {
-  Car _car;
+  final Car _car;
 
   CarDetailsPage(this._car);
 
@@ -16,17 +16,20 @@ class CarDetailsPage extends StatefulWidget {
 class _CarDetailsPageState extends State<CarDetailsPage> {
   final _carDetailsBloc = CarDetailsBloc();
 
+  Car get _car => widget._car;
+
   @override
   void initState() {
     super.initState();
     _carDetailsBloc.fetch();
+    _carDetailsBloc.fetchFavorite(_car);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._car.name ?? "Pistons"),
+        title: Text(widget._car.name ?? "Pistons",),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
@@ -86,23 +89,41 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            text(widget._car.name, fontSize: 20, bold: true),
-            text(widget._car.type, fontSize: 16),
-          ],
+        Container(
+          width: 260,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              text(widget._car.name, fontSize: 20, bold: true,),
+              text(widget._car.type, fontSize: 16),
+            ],
+          ),
         ),
         Row(
           children: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.favorite,
-                color: Colors.red,
-                size: 40,
-              ),
-              onPressed: _onClickFavorite,
-            ),
+            StreamBuilder<bool>(
+                stream: _carDetailsBloc.favoriteStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data != null) {
+                    return snapshot.data
+                        ? IconButton(
+                            icon: Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                              size: 40,
+                            ),
+                            onPressed: _onClickUnfavorite,
+                          )
+                        : IconButton(
+                            icon: Icon(
+                              Icons.favorite,
+                              size: 40,
+                            ),
+                            onPressed: _onClickFavorite,
+                          );
+                  }
+                  return Container();
+                }),
             IconButton(
               icon: Icon(
                 Icons.share,
@@ -165,7 +186,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     }
   }
 
-  void _onClickFavorite() {}
+  void _onClickFavorite() async {
+    _carDetailsBloc.favorite(_car);
+  }
+
+  void _onClickUnfavorite() async {
+    _carDetailsBloc.unfavorite(_car);
+  }
 
   void _onClickShare() {}
 

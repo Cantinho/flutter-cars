@@ -13,10 +13,9 @@ class LoripsumApi{
     }
     var response = await http.get(url);
     String text = response.body;
-    loripsum = text;
     text = text.replaceAll("<p>", "");
-    text = text.replaceAll("</p>", "");
-
+    text = text.replaceAll("<//p>", "");
+    loripsum = text;
     return text;
   }
 }

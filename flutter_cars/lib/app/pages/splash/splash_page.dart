@@ -4,7 +4,7 @@ import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/login_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
-import 'package:flutter_cars/data/repositories/database_helper.dart';
+import 'package:flutter_cars/app/utils/sql/database_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashPage extends StatefulWidget {
