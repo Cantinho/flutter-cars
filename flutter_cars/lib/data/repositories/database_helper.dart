@@ -30,7 +30,7 @@ class DatabaseHelper {
 
   void _onCreate(final Database database, final int newVersion) async {
     await database.execute(
-      "CREATE TABLE ${CarDAO.carTableName}(id INTEGER PRIMARY KEY, type TEXT, name TEXT,"
+      "CREATE TABLE ${CarDAO.TABLE_NAME}(id INTEGER PRIMARY KEY, type TEXT, name TEXT,"
           "description TEXT, urlPhoto TEXT, urlVideo TEXT, "
           "latitude TEXT, longitude TEXT)"
     );
@@ -40,7 +40,7 @@ class DatabaseHelper {
       int newVersion) async {
     print("_onUpgrade: oldVersion: $oldVersion > newVersion: $newVersion");
     if(oldVersion == 1 && newVersion == 2) {
-      await database.execute("alter table ${CarDAO.carTableName} add column NOVA TEXT");
+      await database.execute("alter table ${CarDAO.TABLE_NAME} add column NOVA TEXT");
     }
   }
 
