@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter_cars/data/repositories/car_dao.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,11 +30,13 @@ class DatabaseHelper {
   }
 
   void _onCreate(final Database database, final int newVersion) async {
-    await database.execute(
-      "CREATE TABLE ${CarDAO.TABLE_NAME}(id INTEGER PRIMARY KEY, type TEXT, name TEXT,"
-          "description TEXT, urlPhoto TEXT, urlVideo TEXT, "
-          "latitude TEXT, longitude TEXT)"
-    );
+    
+    final List<String> createSqlList = (await rootBundle.loadString("assets/sql/create.sql")).split(";");
+    for(String create in createSqlList) {
+      if(create.trim().isNotEmpty) {
+        await database.execute(create);
+      }
+    }
   }
 
   Future<FutureOr<void>> _onUpgrade(final Database database, final int oldVersion,

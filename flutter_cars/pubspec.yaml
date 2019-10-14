@@ -50,6 +50,7 @@ flutter:
     - assets/pistons.svg
     - assets/tyre.svg
     - assets/images/
+    - assets/sql/
 
   fonts:
     - family: Inconsolata
