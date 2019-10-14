@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
@@ -14,7 +15,7 @@ class CarDetailsPage extends StatefulWidget {
 
 class _CarDetailsPageState extends State<CarDetailsPage> {
   final _carDetailsBloc = CarDetailsBloc();
-  
+
   @override
   void initState() {
     super.initState();
@@ -66,12 +67,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
       child: ListView(
         children: <Widget>[
           widget._car.urlPhoto != null
-              ? Image.network(
-            widget._car.urlPhoto,
-          )
-              : Image.network(
-            "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
-          ),
+              ? CachedNetworkImage(
+                  imageUrl: widget._car.urlPhoto,
+                )
+              : CachedNetworkImage(
+                  imageUrl:
+                      "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+                ),
           _blockOne(),
           Divider(),
           _blockTwo(),
@@ -82,46 +84,59 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
 
   Row _blockOne() {
     return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                text(widget._car.name, fontSize: 20, bold: true),
-                text(widget._car.type, fontSize: 16),
-              ],
+            text(widget._car.name, fontSize: 20, bold: true),
+            text(widget._car.type, fontSize: 16),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 40,
+              ),
+              onPressed: _onClickFavorite,
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.favorite, color: Colors.red, size: 40,),
-                  onPressed: _onClickFavorite,
-                ),
-                IconButton(
-                  icon: Icon(Icons.share, size: 40,),
-                  onPressed: _onClickShare,
-                ),
-              ],
+            IconButton(
+              icon: Icon(
+                Icons.share,
+                size: 40,
+              ),
+              onPressed: _onClickShare,
             ),
           ],
-        );
+        ),
+      ],
+    );
   }
 
   _blockTwo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         text(widget._car.description, fontSize: 16, bold: true),
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         StreamBuilder<String>(
           stream: _carDetailsBloc.stream,
           builder: (context, snapshot) {
-            if(!snapshot.hasData) {
+            if (!snapshot.hasData) {
               return Column(
                 children: <Widget>[
                   SizedBox(height: 20),
-                  Center(child: CircularProgressIndicator(),),
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ],
               );
             }
@@ -137,7 +152,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   void _onClickVideo() {}
 
   _onClickPopupMenuItem(final String value) {
-    switch(value) {
+    switch (value) {
       case "Edit":
         print("Edit!!!");
         break;
@@ -150,12 +165,9 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     }
   }
 
-  void _onClickFavorite() {
+  void _onClickFavorite() {}
 
-  }
-
-  void _onClickShare() {
-  }
+  void _onClickShare() {}
 
   @override
   void dispose() {
