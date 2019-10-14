@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
-import 'package:flutter_cars/data/services/LoripsumApi.dart';
-import 'package:flutter_cars/data/services/models/Car.dart';
+import 'package:flutter_cars/data/services/models/car.dart';
 
 class CarDetailsPage extends StatefulWidget {
   Car _car;
-
 
   CarDetailsPage(this._car);
 

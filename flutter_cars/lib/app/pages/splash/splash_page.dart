@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/login_page.dart';
+import 'package:flutter_cars/app/pages/login/user.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
+import 'package:flutter_cars/data/repositories/database_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashPage extends StatefulWidget {
@@ -10,6 +14,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final String assetName = "assets/pistons.svg";
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +56,18 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Future.delayed(Duration(seconds: 4)).then((_) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+
+    final Future waitForAWhile = Future.delayed(Duration(seconds: 4));
+    final Future accessDatabase = DatabaseHelper.getInstance().database;
+    final Future<User> fetchUserFromSharedPreference = User.get();
+
+    Future.wait([waitForAWhile, accessDatabase, fetchUserFromSharedPreference]).then((List values) {
+      final User user = values[2];
+;      if (user != null) {
+        push(context, HomePage(), replace: true);
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }
     });
   }
 }
