@@ -8,7 +8,7 @@ import 'dart:convert' as convert;
 
 enum CarType { classic, sport, lux }
 
-String _parseCarType(CarType carType) {
+String parseCarType(CarType carType) {
   switch (carType) {
     case CarType.classic:
       return "classicos";
@@ -23,7 +23,7 @@ String _parseCarType(CarType carType) {
 class CarApi {
   static Future<List<Car>> fetchCars(final CarType carType) async {
     final url =
-        "https://carros-springboot.herokuapp.com/api/v2/carros/tipo/${_parseCarType(carType)}";
+        "https://carros-springboot.herokuapp.com/api/v2/carros/tipo/${parseCarType(carType)}";
     print("GET > $url");
 
     final User user = await User.get();

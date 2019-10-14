@@ -42,8 +42,16 @@ class _CarsPageState extends State<CarsPage>
       stream: _bloc.stream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppTextError(
-            "It was not available fetch cars",
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: Stack(
+              children: <Widget>[
+                ListView(),
+                AppTextError(
+                  "It was not available fetch cars.",
+                )
+              ],
+            ),
           );
         }
 
@@ -52,15 +60,25 @@ class _CarsPageState extends State<CarsPage>
             child: CircularProgressIndicator(),
           );
         }
-        final List<Car> cars = snapshot.data;
+        final List<Car> cars = snapshot.data ?? [];
         return RefreshIndicator(
           onRefresh: _onRefresh,
-          child: CarsListView(cars),
+          child: cars.isNotEmpty ? CarsListView(cars) :
+          Stack(
+            children: <Widget>[
+              ListView(),
+              Container(
+                margin: EdgeInsets.only(left: 16, right: 16),
+                child: AppTextError(
+                  "It was not available fetch cars without internet.",
+                ),
+              )
+            ],
+          ),
         );
       },
     );
   }
-
 
   @override
   void dispose() {
