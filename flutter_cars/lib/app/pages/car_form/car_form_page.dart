@@ -5,7 +5,6 @@ import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
-import 'package:flutter_cars/app/widgets/app_button.dart';
 import 'package:flutter_cars/app/widgets/app_circular_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
@@ -116,19 +115,8 @@ class _CarroFormPageState extends State<CarFormPage> {
     );
   }
 
-//  _headerFoto() {
-//    return car != null
-//        ? CachedNetworkImage(
-//      imageUrl: car.urlPhoto,
-//    )
-//        : Image.asset(
-//      "assets/images/camera.png",
-//      height: 150,
-//    );
-//  }
-
   _headerPhoto() {
-    return car != null
+    return car != null && car.urlPhoto != null
         ? CachedNetworkImage(
             imageUrl: car.urlPhoto,
           )
@@ -136,7 +124,7 @@ class _CarroFormPageState extends State<CarFormPage> {
             "assets/camera.svg",
             height: 150,
             width: 150,
-            color: blendedRed(),
+            color: blendedBlack(),
             semanticsLabel: 'A red up arrow',
           );
   }
@@ -233,7 +221,7 @@ class _CarroFormPageState extends State<CarFormPage> {
       });
     } else {
       showCustomDialog(context, title: "Cars", message: "Failed to save car", onOk: () {
-        Navigator.pop(context);
+        pop(context, "");
       });
     }
 
