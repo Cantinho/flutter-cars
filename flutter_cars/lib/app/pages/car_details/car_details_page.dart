@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
+import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 
@@ -29,6 +32,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: blendedRed(),
         title: Text(widget._car.name ?? "Pistons",),
         actions: <Widget>[
           IconButton(
@@ -109,7 +113,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         ? IconButton(
                             icon: Icon(
                               Icons.favorite,
-                              color: Colors.red,
+                              color: blendedRed(),
                               size: 40,
                             ),
                             onPressed: _onClickUnfavorite,
@@ -176,6 +180,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     switch (value) {
       case "Edit":
         print("Edit!!!");
+        push(context, CarFormPage(car: _car,));
         break;
       case "Delete":
         print("Delete!!!");

@@ -51,6 +51,7 @@ flutter:
   assets:
     - assets/pistons.svg
     - assets/tyre.svg
+    - assets/camera.svg
     - assets/images/
     - assets/sql/
 

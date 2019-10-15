@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTextError extends StatelessWidget {
   final String _message;
+  final Color color;
 
-  AppTextError(this._message);
+  AppTextError(this._message, {this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class AppTextError extends StatelessWidget {
       child: Text(
         _message,
         style: TextStyle(
-          color: Colors.red,
+          color: color,
           fontSize: 22,
         ),
       ),

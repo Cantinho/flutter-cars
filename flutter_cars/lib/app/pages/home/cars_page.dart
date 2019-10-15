@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_listview.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
@@ -43,10 +44,15 @@ class _CarsPageState extends State<CarsPage>
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return RefreshIndicator(
+
+            backgroundColor: blendedRed(),
+            color: white(),
             onRefresh: _onRefresh,
             child: Stack(
               children: <Widget>[
-                ListView(),
+                Container(
+                    color: blendedBlack(),
+                    child: ListView()),
                 AppTextError(
                   "It was not available fetch cars.",
                 )
@@ -62,18 +68,26 @@ class _CarsPageState extends State<CarsPage>
         }
         final List<Car> cars = snapshot.data ?? [];
         return RefreshIndicator(
+          backgroundColor: blendedRed(),
+          color: white(),
           onRefresh: _onRefresh,
-          child: cars.isNotEmpty ? CarsListView(cars) :
-          Stack(
-            children: <Widget>[
-              ListView(),
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: AppTextError(
-                  "It was not available fetch cars without internet.",
-                ),
-              )
-            ],
+          child: Container(
+            color: blendedBlack(),
+            child: cars.isNotEmpty ? CarsListView(cars) :
+            Stack(
+              children: <Widget>[
+                Container(
+                    color: blendedBlack(),
+                    child: ListView()),
+                Container(
+                  color: blendedBlack(),
+                  margin: EdgeInsets.only(left: 8, right: 8),
+                  child: AppTextError(
+                    "It was not available fetch cars without internet.",
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },

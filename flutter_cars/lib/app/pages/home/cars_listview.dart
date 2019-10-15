@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
+import 'package:flutter_cars/app/widgets/app_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 
 class CarsListView extends StatelessWidget {
@@ -23,11 +25,12 @@ class CarsListView extends StatelessWidget {
         itemBuilder: (context, index) {
           final Car car = cars[index];
           return Card(
+            margin: EdgeInsets.only(bottom: 16),
             color: Colors.grey[100],
             child: Stack(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(8),
+                  margin: EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -60,11 +63,11 @@ class CarsListView extends StatelessWidget {
                         child: ButtonBar(
                           children: <Widget>[
                             FlatButton(
-                              child: const Text('DETAILS'),
+                              child: text('DETAILS', color: blendedRed()),
                               onPressed: () => _onClickCarDetails(context, car),
                             ),
                             FlatButton(
-                              child: const Text('SHARE'),
+                              child: text('SHARE', color: blendedRed()),
                               onPressed: () => _onClickCarShare(context, car),
                             )
                           ],
