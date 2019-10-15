@@ -10,7 +10,7 @@ class CarDAO extends BaseDAO<Car> {
 
   @override
   Car fromMap(Map<String, dynamic> map) {
-    return Car.fromJson(map);
+    return Car.fromMap(map);
   }
 
   Future<List<Car>> findAllByType(final String type) async {
