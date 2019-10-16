@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 
 class AppButton extends StatelessWidget {
   final String label;
@@ -11,7 +12,7 @@ class AppButton extends StatelessWidget {
     return Container(
       height: 46,
       child: RaisedButton(
-        color: Colors.blue,
+        color: blendedRed(),
         child: Text(
           label,
           style: TextStyle(

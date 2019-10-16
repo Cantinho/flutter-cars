@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/login_bloc.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_button.dart';
@@ -33,7 +34,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cars"),
+
+        backgroundColor: blendedRed(),
+        title: Text("Pistons"),
       ),
       body: _body(),
     );
@@ -49,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             snapshot.data
                 ? LinearProgressIndicator(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.grey,
                   )
                 : Container(),
             Expanded(
@@ -66,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                           textInputAction: TextInputAction.next,
                           context: context,
                           nextFocus: _passwordFocus),
-                      SizedBox(height: 8),
+                      SizedBox(height: 16),
                       AppInputText('Password', "Insert a string password",
                           controller: _tPasswordController,
                           validator: _validatePassword,

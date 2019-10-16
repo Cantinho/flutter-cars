@@ -3,6 +3,7 @@ import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_listview.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
@@ -38,10 +39,12 @@ class _FavoriteCarsPageState extends State<FavoriteCarsPage>
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return RefreshIndicator(
+            backgroundColor: blendedRed(),
+            color: white(),
             onRefresh: _onRefresh,
             child: Stack(
               children: <Widget>[
-                ListView(),
+                Container(color: blendedBlack(), child: ListView()),
                 AppTextError(
                   "No favorite car.",
                 )
@@ -57,18 +60,27 @@ class _FavoriteCarsPageState extends State<FavoriteCarsPage>
         }
         final List<Car> cars = snapshot.data ?? [];
         return RefreshIndicator(
+          backgroundColor: blendedRed(),
+          color: white(),
           onRefresh: _onRefresh,
-          child: cars.isNotEmpty ? CarsListView(cars, favoritePage: true,) :
-          Stack(
-            children: <Widget>[
-              ListView(),
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: AppTextError(
-                  "No favorite car.",
-                ),
-              )
-            ],
+          child: Container(
+            color: blendedBlack(),
+            child: cars.isNotEmpty
+                ? CarsListView(
+                    cars,
+                    favoritePage: true,
+                  )
+                : Stack(
+                    children: <Widget>[
+                      Container(child: ListView()),
+                      Container(
+                        margin: EdgeInsets.only(left: 8, right: 8),
+                        child: AppTextError(
+                          "No favorite car.",
+                        ),
+                      )
+                    ],
+                  ),
           ),
         );
       },

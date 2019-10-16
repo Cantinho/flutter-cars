@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
 import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_page.dart';
 import 'package:flutter_cars/app/pages/home/drawer_list.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/utils/prefs.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 
@@ -33,8 +36,9 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       appBar: AppBar(
         title: Text('Carros'),
-        backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
+        backgroundColor: blendedRed(),
         bottom: TabBar(
+          indicatorColor: white(),
           controller: _tabController,
           tabs: <Widget>[
             Tab(
@@ -72,6 +76,15 @@ class _HomePageState extends State<HomePage>
         ],
       ),
       drawer: DrawerList(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: blendedRed(),
+        onPressed: _onClickAddCar,
+      ),
     );
+  }
+
+  void _onClickAddCar() {
+    push(context, CarFormPage());
   }
 }

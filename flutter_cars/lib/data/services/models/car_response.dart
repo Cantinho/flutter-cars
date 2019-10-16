@@ -1,4 +1,4 @@
-
+import 'dart:convert' as convert;
 import 'package:flutter_cars/data/repositories/car.dart';
 
 class CarResponse {
@@ -13,13 +13,13 @@ class CarResponse {
 
   CarResponse(
       {this.id,
-        this.name,
-        this.type,
-        this.description,
-        this.urlPhoto,
-        this.urlVideo,
-        this.latitude,
-        this.longitude});
+      this.name,
+      this.type,
+      this.description,
+      this.urlPhoto,
+      this.urlVideo,
+      this.latitude,
+      this.longitude});
 
   CarResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -32,7 +32,7 @@ class CarResponse {
     longitude = json['longitude'];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['nome'] = this.name;
@@ -54,9 +54,24 @@ class CarResponse {
         urlPhoto: carResponse.urlPhoto,
         urlVideo: carResponse.urlVideo,
         latitude: carResponse.latitude,
-        longitude: carResponse.longitude
-    );
+        longitude: carResponse.longitude);
 
     return car;
+  }
+
+  CarResponse.fromCar(final Car car) {
+    id = car.id;
+    name = car.name;
+    type = car.type;
+    description = car.description;
+    urlPhoto = car.urlPhoto;
+    urlVideo = car.urlVideo;
+    latitude = car.latitude;
+    longitude = car.longitude;
+  }
+
+  String toJson() {
+    String json = convert.json.encode(toMap());
+    return json;
   }
 }

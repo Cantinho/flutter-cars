@@ -1,6 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/car_details/PageState.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
+import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
+import 'package:flutter_cars/app/utils/dialog.dart';
+import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 
@@ -29,7 +34,10 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._car.name ?? "Pistons",),
+        backgroundColor: blendedRed(),
+        title: Text(
+          widget._car.name ?? "Pistons",
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
@@ -65,24 +73,35 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   }
 
   _body() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: ListView(
-        children: <Widget>[
-          widget._car.urlPhoto != null
-              ? CachedNetworkImage(
-                  imageUrl: widget._car.urlPhoto,
-                )
-              : CachedNetworkImage(
-                  imageUrl:
-                      "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
-                ),
-          _blockOne(),
-          Divider(),
-          _blockTwo(),
-        ],
-      ),
-    );
+    return StreamBuilder<PageState>(
+        stream: _carDetailsBloc.pageStateStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data is Loading) {
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                  showCustomLoadingDialog(context, title: "Loading"));
+            }
+          }
+
+          return Container(
+            padding: EdgeInsets.all(16),
+            child: ListView(
+              children: <Widget>[
+                widget._car.urlPhoto != null
+                    ? CachedNetworkImage(
+                        imageUrl: widget._car.urlPhoto,
+                      )
+                    : CachedNetworkImage(
+                        imageUrl:
+                            "https://cdn0.iconfinder.com/data/icons/shift-travel/32/Speed_Wheel-512.png",
+                      ),
+                _blockOne(),
+                Divider(),
+                _blockTwo(),
+              ],
+            ),
+          );
+        });
   }
 
   Row _blockOne() {
@@ -94,7 +113,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              text(widget._car.name, fontSize: 20, bold: true,),
+              text(
+                widget._car.name,
+                fontSize: 20,
+                bold: true,
+              ),
               text(widget._car.type, fontSize: 16),
             ],
           ),
@@ -109,7 +132,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         ? IconButton(
                             icon: Icon(
                               Icons.favorite,
-                              color: Colors.red,
+                              color: blendedRed(),
                               size: 40,
                             ),
                             onPressed: _onClickUnfavorite,
@@ -176,9 +199,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     switch (value) {
       case "Edit":
         print("Edit!!!");
+        _edit();
         break;
       case "Delete":
         print("Delete!!!");
+        _delete();
         break;
       case "Share":
         print("Share!!!");
@@ -195,6 +220,18 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   }
 
   void _onClickShare() {}
+
+  void _edit() {
+    push(
+        context,
+        CarFormPage(
+          car: _car,
+        ));
+  }
+
+  void _delete() {
+    _carDetailsBloc.delete(_car);
+  }
 
   @override
   void dispose() {

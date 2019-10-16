@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/utils/app_colors.dart';
 
 class AppInputText extends StatelessWidget {
   final String label;
@@ -38,9 +39,10 @@ class AppInputText extends StatelessWidget {
       onFieldSubmitted: (String text) {
         FocusScope.of(context).requestFocus(nextFocus);
       },
+      cursorColor: blendedRed(),
       style: TextStyle(
         fontSize: 18,
-        color: Colors.blue,
+        color: blendedRed(),
       ),
       decoration: InputDecoration(
         border: OutlineInputBorder(
