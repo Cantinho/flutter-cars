@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/data/repositories/car_dao.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/models/car_response.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_cars/app/utils/http_helper.dart' as http;
 import 'dart:convert' as convert;
 
 enum CarType { classic, sport, lux }
@@ -28,13 +27,7 @@ class CarApi {
         "https://carros-springboot.herokuapp.com/api/v2/carros/tipo/${parseCarType(carType)}";
     print("GET > $url");
 
-    final User user = await User.get();
-    final Map<String, String> headers = {
-      HttpHeaders.contentTypeHeader: "application/json",
-      HttpHeaders.authorizationHeader: "Bearer ${user.token}",
-    };
-
-    final response = await http.get(url, headers: headers);
+    final response = await http.get(url);
     final String json = response.body;
 
     final List list = convert.json.decode(json);
@@ -52,13 +45,6 @@ class CarApi {
 
   static Future<ApiResponse<bool>> save(final Car car) async {
     try {
-      final User user = await User.get();
-
-      final Map<String, String> headers = {
-        HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${user.token}"
-      };
-
       var url = 'https://carros-springboot.herokuapp.com/api/v2/carros';
       if (car.id != null) {
         url += "/${car.id}";
@@ -70,8 +56,8 @@ class CarApi {
       print("   JSON > $json");
 
       final response = await (car.id == null
-          ? http.post(url, body: json, headers: headers)
-          : http.put(url, body: json, headers: headers));
+          ? http.post(url, body: json)
+          : http.put(url, body: json));
 
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");
@@ -98,18 +84,11 @@ class CarApi {
 
   Future<ApiResponse<bool>> delete(final Car car) async {
     try {
-      final User user = await User.get();
-
-      final Map<String, String> headers = {
-        HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${user.token}"
-      };
-
       var url = 'https://carros-springboot.herokuapp.com/api/v2/carros/${car.id}';
 
       print("DELETE > $url");
 
-      final response = await http.delete(url, headers: headers);
+      final response = await http.delete(url);
 
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");

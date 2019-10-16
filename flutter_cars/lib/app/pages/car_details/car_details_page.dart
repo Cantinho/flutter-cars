@@ -4,6 +4,7 @@ import 'package:flutter_cars/app/pages/car_details/PageState.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
+import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
@@ -29,6 +30,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     super.initState();
     _carDetailsBloc.fetch();
     _carDetailsBloc.fetchFavorite(_car);
+    _carDetailsBloc.fetchUser();
   }
 
   @override
@@ -48,25 +50,41 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
             icon: Icon(Icons.videocam),
             onPressed: _onClickVideo,
           ),
-          PopupMenuButton<String>(
-            onSelected: (String value) => _onClickPopupMenuItem(value),
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: "Edit",
-                  child: Text("Edit"),
-                ),
-                PopupMenuItem(
-                  value: "Delete",
-                  child: Text("Delete"),
-                ),
-                PopupMenuItem(
-                  value: "Share",
-                  child: Text("Share"),
-                ),
-              ];
-            },
-          ),
+          StreamBuilder<User>(
+              stream: _carDetailsBloc.userStream,
+              builder: (context, snapshot) {
+                return PopupMenuButton<String>(
+                  onSelected: (String value) => _onClickPopupMenuItem(value),
+                  itemBuilder: (context) {
+                    final items = [
+                      PopupMenuItem(
+                        value: "Share",
+                        child: Text("Share"),
+                      )
+                    ];
+
+                    if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data.isAdmin()) {
+                      items.insert(
+                        0,
+                        PopupMenuItem(
+                          value: "Delete",
+                          child: Text("Delete"),
+                        ),
+                      );
+                      items.insert(
+                        0,
+                        PopupMenuItem(
+                          value: "Edit",
+                          child: Text("Edit"),
+                        ),
+                      );
+                    }
+                    return items;
+                  },
+                );
+              }),
         ],
       ),
       body: _body(),

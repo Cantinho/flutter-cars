@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter_cars/app/pages/car_details/PageState.dart';
 import 'package:flutter_cars/app/pages/car_details/PageState.dart' as prefix0;
+import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 import 'package:flutter_cars/data/services/LoripsumApi.dart';
 import 'package:flutter_cars/data/services/favorite_car_service.dart';
@@ -13,10 +14,12 @@ class CarDetailsBloc {
   final _streamController = StreamController<String>();
   final _streamFavoriteController = StreamController<bool>();
   final _streamPageStateController = StreamController<PageState>();
+  final _streamUserController = StreamController<User>();
 
   Stream<String> get stream => _streamController.stream;
   Stream<bool> get favoriteStream => _streamFavoriteController.stream;
   Stream<PageState> get pageStateStream => _streamPageStateController.stream;
+  Stream<User> get userStream => _streamUserController.stream;
 
   fetch() async {
     String content = await LoripsumApi.getLoripsum();
@@ -33,11 +36,6 @@ class CarDetailsBloc {
     _streamFavoriteController.add(false);
   }
 
-  void dispose() {
-    _streamController.close();
-    _streamFavoriteController.close();
-  }
-
   void fetchFavorite(final Car car) async {
     final bool isFavorite = await FavoriteCarService.fetchFavorite(car);
     _streamFavoriteController.add(isFavorite);
@@ -51,6 +49,15 @@ class CarDetailsBloc {
       return;
     }
     _streamPageStateController.add(Error(title: "Details", message: "Unable to delete car from server."));
+  }
 
+  void fetchUser() async {
+    final User user = await User.get();
+    _streamUserController.add(user);
+  }
+
+  void dispose() {
+    _streamController.close();
+    _streamFavoriteController.close();
   }
 }
