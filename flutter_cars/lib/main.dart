@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
 import 'package:flutter_cars/app/pages/login/login_page.dart';
 import 'package:flutter_cars/app/pages/splash/splash_page.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,16 +25,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // hide debug banner
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: MaterialColor(0xFF880E4F, swatch),
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Inconsolata',
+    return MultiProvider(
+      providers: [
+        Provider<FavoriteCarsBloc>(
+          builder: (context) => FavoriteCarsBloc(),
+          dispose: (context, bloc) => bloc.dispose(),
+        )
+      ],
+      child: MaterialApp(
+        // hide debug banner
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: MaterialColor(0xFF880E4F, swatch),
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.white,
+          fontFamily: 'Inconsolata',
+        ),
+        home: SplashPage(),
       ),
-      home: SplashPage(),
     );
   }
 }
