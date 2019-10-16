@@ -11,6 +11,7 @@ import 'package:flutter_cars/data/repositories/car.dart';
 import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CarFormPage extends StatefulWidget {
   final Car car;
@@ -18,10 +19,10 @@ class CarFormPage extends StatefulWidget {
   CarFormPage({this.car});
 
   @override
-  State<StatefulWidget> createState() => _CarroFormPageState();
+  State<StatefulWidget> createState() => _CarFormPageState();
 }
 
-class _CarroFormPageState extends State<CarFormPage> {
+class _CarFormPageState extends State<CarFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final tName = TextEditingController();
@@ -33,6 +34,8 @@ class _CarroFormPageState extends State<CarFormPage> {
   var _showProgress = false;
 
   Car get car => widget.car;
+
+  var _file;
 
   // Add validate email function.
   String _validateName(final String value) {
@@ -47,7 +50,7 @@ class _CarroFormPageState extends State<CarFormPage> {
   void initState() {
     super.initState();
 
-    // Copia os dados do carro para o form
+    // copy car data to form
     if (car != null) {
       tName.text = car.name;
       tDescription.text = car.description;
@@ -76,6 +79,7 @@ class _CarroFormPageState extends State<CarFormPage> {
       child: ListView(
         children: <Widget>[
           _headerPhoto(),
+          SizedBox(height: 8,),
           Text(
             "Click image to take a photo.",
             textAlign: TextAlign.center,
@@ -116,17 +120,29 @@ class _CarroFormPageState extends State<CarFormPage> {
   }
 
   _headerPhoto() {
-    return car != null && car.urlPhoto != null
-        ? CachedNetworkImage(
-            imageUrl: car.urlPhoto,
-          )
-        : SvgPicture.asset(
-            "assets/camera.svg",
-            height: 150,
-            width: 150,
-            color: blendedBlack(),
-            semanticsLabel: 'A red up arrow',
-          );
+    return InkWell(
+      onTap: _onClickPhoto,
+      child: _file != null
+          ? Image.file(
+              _file,
+              height: 150,
+            )
+          : car != null && car.urlPhoto != null
+              ? CachedNetworkImage(
+                  imageUrl: car.urlPhoto,
+                )
+              : _defaultPhoto(),
+    );
+  }
+
+  _defaultPhoto() {
+    return SvgPicture.asset(
+      "assets/camera.svg",
+      height: 150,
+      width: 150,
+      color: blendedBlack(),
+      semanticsLabel: 'A red up arrow',
+    );
   }
 
   _radioType() {
@@ -192,6 +208,16 @@ class _CarroFormPageState extends State<CarFormPage> {
     }
   }
 
+  void _onClickPhoto() async {
+    final file = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 85);
+    if (file != null) {
+      setState(() {
+        _file = file;
+      });
+    }
+  }
+
   _onClickSave() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -211,7 +237,7 @@ class _CarroFormPageState extends State<CarFormPage> {
 
     print("Save the car $aCar");
 
-    ApiResponse<bool> response = await CarApi.save(aCar);
+    ApiResponse<bool> response = await CarApi.save(aCar, _file);
 
     if (response.isSuccess()) {
       showCustomDialog(context,
@@ -220,7 +246,8 @@ class _CarroFormPageState extends State<CarFormPage> {
         push(context, HomePage(), replace: true);
       });
     } else {
-      showCustomDialog(context, title: "Cars", message: "Failed to save car", onOk: () {
+      showCustomDialog(context, title: "Cars", message: "Failed to save car",
+          onOk: () {
         pop(context, "");
       });
     }
