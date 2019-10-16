@@ -1,23 +1,19 @@
-abstract class PageState {}
-
-class Loading extends PageState {
+class PageState {
   String title;
   String message;
 
-  Loading({this.title, this.message});
+  PageState({this.title, this.message});
+}
+
+class Loading extends PageState {
+  Loading({title, message}) : super(title: title, message: message);
 }
 
 class Error extends PageState {
   String error;
-  String title;
-  String message;
-
-  Error({this.error, this.title, this.message});
+  Error({this.error, title, message}) : super(title: title, message: message);
 }
 
 class Success extends PageState {
-  String title;
-  String message;
-
-  Success({this.title, this.message});
+  Success({title, message}) : super(title: title, message: message);
 }

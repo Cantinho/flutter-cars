@@ -6,7 +6,7 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
-  Map<int, Color> swatch =
+  final Map<int, Color> swatch =
   {
     50:Color.fromRGBO(136,14,79, .1),
     100:Color.fromRGBO(136,14,79, .2),

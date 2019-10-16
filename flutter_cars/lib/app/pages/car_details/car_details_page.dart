@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/PageState.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
+import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
@@ -78,8 +79,35 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data is Loading) {
-              WidgetsBinding.instance.addPostFrameCallback((_) =>
-                  showCustomLoadingDialog(context, title: "Loading"));
+              WidgetsBinding.instance
+                  .addPostFrameCallback((_) => showCustomLoadingDialog(
+                        context,
+                        title: snapshot.data.title,
+                        message: snapshot.data.message,
+                      ));
+            } else if (snapshot.data is Success) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pop(context);
+                showCustomDialog(context,
+                    title: snapshot.data.title,
+                    message: snapshot.data.message, onOk: () {
+                  Navigator.pop(context);
+                  push(context, HomePage(), replace: true);
+                });
+              });
+            } else if (snapshot.data is Error) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pop(context);
+                showCustomDialog(
+                  context,
+                  title: snapshot.data.title,
+                  message: snapshot.data.message,
+                  onOk: () {
+                    Navigator.pop(context);
+                    push(context, HomePage(), replace: true);
+                  },
+                );
+              });
             }
           }
 
@@ -109,7 +137,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Container(
-          width: 260,
+          width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

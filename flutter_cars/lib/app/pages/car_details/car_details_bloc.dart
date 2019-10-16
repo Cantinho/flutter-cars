@@ -44,13 +44,13 @@ class CarDetailsBloc {
   }
 
   void delete(final Car car) async {
-    _streamPageStateController.add(Loading(title: "Delete", message: "We're deleting the car..."));
+    _streamPageStateController.add(Loading(title: "Details", message: "We're deleting the car..."));
     await Future.delayed(Duration(seconds: 3));
 //    final bool wasDeleted = await FavoriteCarService.delete(car);
 //    if(wasDeleted) {
-//      _streamPageStateController.add(Error(title: "Delete error", message: "Unable to delete car from server."));
+//      _streamPageStateController.add(Error(title: "Details", message: "Unable to delete car from server."));
 //      return;
 //    }
-    _streamPageStateController.add(Success(title: "Delete", message: "Success on delete car."));
+    _streamPageStateController.add(Success(title: "Details", message: "Success on delete car."));
   }
 }
