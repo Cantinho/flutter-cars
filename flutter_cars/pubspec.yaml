@@ -31,6 +31,7 @@ dependencies:
   sqflite: 1.1.7+1
   cached_network_image: 1.1.1
   connectivity: 0.4.4
+  image_picker: 0.6.1+8
 
 dev_dependencies:
   flutter_test:
