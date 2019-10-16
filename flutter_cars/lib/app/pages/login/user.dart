@@ -40,6 +40,13 @@ class User {
     return 'User{id: $id, String: $String, name: $name, email: $email, token: $token, photoUrl: $photoUrl, roles: $roles}';
   }
 
+  bool isAdmin() {
+    if(roles != null && roles.contains("ROLE_ADMIN")) {
+      return true;
+    }
+    return false;
+  }
+
   void save() {
     final Map map = toJson();
     final String json = convert.json.encode(map);
