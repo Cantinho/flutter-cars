@@ -1,12 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/home/cars_listview.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
+import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/widgets/app_text_error.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteCarsPage extends StatefulWidget {
+  var forceReload;
+
+  FavoriteCarsPage([this.forceReload]);
+
   @override
   _FavoriteCarsPageState createState() => _FavoriteCarsPageState();
 
@@ -27,78 +34,69 @@ class _FavoriteCarsPageState extends State<FavoriteCarsPage>
   @override
   void initState() {
     super.initState();
-  }
-
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    final favoriteCarsBloc = Provider.of<FavoriteCarsBloc>(context);
-    favoriteCarsBloc.fetch();
+    final favoritesModel = Provider.of<FavoritesModel>(context, listen: false);
+    favoritesModel.fetch();
   }
 
   _body() {
-    return StreamBuilder(
-      stream: Provider.of<FavoriteCarsBloc>(context).stream,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return RefreshIndicator(
-            backgroundColor: blendedRed(),
-            color: white(),
-            onRefresh: _onRefresh,
-            child: Stack(
-              children: <Widget>[
-                Container(color: blendedBlack(), child: ListView()),
-                AppTextError(
-                  "No favorite car.",
-                )
-              ],
-            ),
-          );
-        }
 
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        final List<Car> cars = snapshot.data ?? [];
-        return RefreshIndicator(
-          backgroundColor: blendedRed(),
-          color: white(),
-          onRefresh: _onRefresh,
-          child: Container(
-            color: blendedBlack(),
-            child: cars.isNotEmpty
-                ? CarsListView(
-                    cars,
-                    favoritePage: true,
-                  )
-                : Stack(
-                    children: <Widget>[
-                      Container(child: ListView()),
-                      Container(
-                        margin: EdgeInsets.only(left: 8, right: 8),
-                        child: AppTextError(
-                          "No favorite car.",
-                        ),
-                      )
-                    ],
-                  ),
-          ),
-        );
-      },
+    FavoritesModel model = Provider.of<FavoritesModel>(context);
+    if(widget.forceReload != null && widget.forceReload) {
+      model.fetch();
+      setState(() {
+        widget.forceReload = false;
+      });
+    }
+    List<Car> cars = model.cars;
+    if(cars.isEmpty) {
+      return RefreshIndicator(
+        backgroundColor: blendedRed(),
+        color: white(),
+        onRefresh: _onRefresh,
+        child: Stack(
+          children: <Widget>[
+            Container(color: blendedBlack(), child: ListView()),
+            AppTextError(
+              "No favorite car.",
+            )
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      backgroundColor: blendedRed(),
+      color: white(),
+      onRefresh: _onRefresh,
+      child: Container(
+        color: blendedBlack(),
+        child: cars.isNotEmpty
+            ? CarsListView(
+          cars,
+          favoritePage: true,
+        )
+            : Stack(
+          children: <Widget>[
+            Container(child: ListView()),
+            Container(
+              margin: EdgeInsets.only(left: 8, right: 8),
+              child: AppTextError(
+                "No favorite car.",
+              ),
+            )
+          ],
+        ),
+      ),
     );
+
   }
 
   @override
   void dispose() {
     super.dispose();
-    Provider.of<FavoriteCarsBloc>(context).dispose();
   }
 
   Future<void> _onRefresh() {
-    return Future.delayed(Duration(seconds: 3), () {
-      print("onRefresh: finished");
-      Provider.of<FavoriteCarsBloc>(context).fetch();
-    });
+    return Provider.of<FavoritesModel>(context,listen: false).fetch();
   }
 }

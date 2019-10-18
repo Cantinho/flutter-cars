@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_cars/app/pages/car_details/car_details_page.dart';
 import 'package:flutter_cars/app/pages/home/cars_bloc.dart';
 import 'package:flutter_cars/app/pages/home/cars_listview.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
-import 'package:flutter_cars/app/utils/nav.dart';
+import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/widgets/app_text_error.dart';
-import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
+import 'package:flutter_cars/data/services/car_api.dart';
 
 class CarsPage extends StatefulWidget {
   final CarType carType;
@@ -20,6 +21,8 @@ class CarsPage extends StatefulWidget {
 class _CarsPageState extends State<CarsPage>
     with AutomaticKeepAliveClientMixin<CarsPage> {
   final _bloc = CarsBloc();
+
+  StreamSubscription<Event> _subscription;
 
   CarType get _carType => widget.carType;
 
@@ -36,6 +39,14 @@ class _CarsPageState extends State<CarsPage>
   void initState() {
     super.initState();
     _bloc.fetch(_carType);
+    
+    final eventBus = EventBus.get(context);
+    _subscription = eventBus.stream.listen((Event event) {
+      print("Event $event");
+      if (event is CarEvent && event.type == parseCarType(_carType)) {
+        _bloc.fetch(_carType);
+      }
+    });
   }
 
   _body() {
@@ -98,12 +109,10 @@ class _CarsPageState extends State<CarsPage>
   void dispose() {
     super.dispose();
     _bloc.dispose();
+    _subscription.cancel();
   }
 
   Future<void> _onRefresh() {
-    return Future.delayed(Duration(seconds: 3), () {
-      print("onRefresh: finished");
-      _bloc.fetch(_carType);
-    });
+    return _bloc.fetch(_carType);
   }
 }

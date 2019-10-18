@@ -11,6 +11,10 @@ import 'package:flutter_cars/app/utils/prefs.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 
 class HomePage extends StatefulWidget {
+  final forceReload;
+
+  HomePage([this.forceReload]);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -43,7 +47,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carros'),
+        title: Text('Cars'),
         backgroundColor: blendedRed(),
         bottom: TabBar(
           indicatorColor: white(),
@@ -80,7 +84,7 @@ class _HomePageState extends State<HomePage>
           CarsPage(
             carType: CarType.lux,
           ),
-          FavoriteCarsPage(),
+          FavoriteCarsPage(widget.forceReload),
         ],
       ),
       drawer: DrawerList(),

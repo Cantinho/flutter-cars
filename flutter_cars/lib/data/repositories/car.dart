@@ -1,5 +1,19 @@
 
+import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/utils/sql/entity.dart';
+
+class CarEvent extends Event {
+  String intent;
+  String type;
+
+  CarEvent(this.intent, this.type);
+
+  @override
+  String toString() {
+    return 'CarEvent{intent: $intent, type: $type}';
+  }
+
+}
 
 class Car extends Entity {
   int id;

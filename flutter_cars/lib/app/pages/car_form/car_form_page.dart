@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
+import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_circular_button.dart';
 import 'package:flutter_cars/app/widgets/app_input_text.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_cars/data/services/api_response.dart';
 import 'package:flutter_cars/data/services/car_api.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CarFormPage extends StatefulWidget {
   final Car car;
@@ -79,7 +82,9 @@ class _CarFormPageState extends State<CarFormPage> {
       child: ListView(
         children: <Widget>[
           _headerPhoto(),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           Text(
             "Click image to take a photo.",
             textAlign: TextAlign.center,
@@ -242,8 +247,11 @@ class _CarFormPageState extends State<CarFormPage> {
     if (response.isSuccess()) {
       showCustomDialog(context,
           title: "Cars", message: "Car successfully saved", onOk: () {
+        final favoritesModel = Provider.of<FavoritesModel>(context, listen: false);
+        favoritesModel.fetch();
+        EventBus.get(context).sendEvent(CarEvent("car_save", car.type));
         Navigator.pop(context);
-        push(context, HomePage(), replace: true);
+        push(context, HomePage(true), replace: true);
       });
     } else {
       showCustomDialog(context, title: "Cars", message: "Failed to save car",
