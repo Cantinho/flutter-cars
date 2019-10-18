@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
-import 'package:flutter_cars/app/pages/login/login_page.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/splash/splash_page.dart';
 import 'package:provider/provider.dart';
+
+import 'app/utils/event_bus.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,9 +29,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<FavoriteCarsBloc>(
-          builder: (context) => FavoriteCarsBloc(),
-          dispose: (context, bloc) => bloc.dispose(),
+        Provider<EventBus>(
+          builder: (context) => EventBus(),
+          dispose: (context, bus) => bus.dispose(),
+        ),
+        ChangeNotifierProvider<FavoritesModel>(
+          builder: (context) => FavoritesModel()
         )
       ],
       child: MaterialApp(

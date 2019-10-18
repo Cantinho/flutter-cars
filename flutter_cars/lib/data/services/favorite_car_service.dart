@@ -8,10 +8,10 @@ import 'package:flutter_cars/data/services/car_api.dart';
 
 class FavoriteCarService {
 
-  static favoriteCar(final Car car) {
+  static favoriteCar(final Car car) async {
     final FavoriteCar favoriteCar = FavoriteCar.fromCar(car);
     final dao = FavoriteCarDAO();
-    dao.save(favoriteCar);
+    await dao.save(favoriteCar);
   }
 
   static void unfavoriteCar(final Car car) async {

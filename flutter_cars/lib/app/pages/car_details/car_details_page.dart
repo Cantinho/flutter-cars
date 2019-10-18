@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/car_details/PageState.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
-import 'package:flutter_cars/app/pages/favorite_car/favorite_cars_bloc.dart';
+import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
+import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
@@ -111,6 +112,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                 showCustomDialog(context,
                     title: snapshot.data.title,
                     message: snapshot.data.message, onOk: () {
+                  EventBus.get(context)
+                      .sendEvent(CarEvent("car_delete", _car.type));
                   Navigator.pop(context);
                   push(context, HomePage(), replace: true);
                 });
@@ -176,7 +179,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                 stream: _carDetailsBloc.favoriteStream,
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
-                    Provider.of<FavoriteCarsBloc>(context).fetch();
+                    Provider.of<FavoritesModel>(context, listen: false).fetch();
                     return snapshot.data
                         ? IconButton(
                             icon: Icon(
@@ -272,10 +275,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
 
   void _edit() {
     push(
-        context,
-        CarFormPage(
-          car: _car,
-        ));
+      context,
+      CarFormPage(
+        car: _car,
+      ),
+    );
   }
 
   void _delete() {
