@@ -12,7 +12,9 @@ import 'package:flutter_cars/app/utils/event_bus.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
 import 'package:flutter_cars/app/widgets/app_text.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CarDetailsPage extends StatefulWidget {
   final Car _car;
@@ -51,7 +53,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
           ),
           IconButton(
             icon: Icon(Icons.videocam),
-            onPressed: _onClickVideo,
+            onPressed: () => _onClickVideo(context),
           ),
           StreamBuilder<User>(
               stream: _carDetailsBloc.userStream,
@@ -245,7 +247,21 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
 
   void _onClickMap() {}
 
-  void _onClickVideo() {}
+  void _onClickVideo(context) {
+    if(_car.urlVideo != null && _car.urlVideo.isNotEmpty) {
+      launch(_car.urlVideo);
+    } else {
+      Fluttertoast.showToast(
+          msg: "This car has no video.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          // timeInSecForIos is only used for iOS.
+          timeInSecForIos: 1,
+          backgroundColor: blendedRed(),
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
 
   _onClickPopupMenuItem(final String value) {
     switch (value) {
