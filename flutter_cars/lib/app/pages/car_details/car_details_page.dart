@@ -6,6 +6,7 @@ import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
 import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
+import 'package:flutter_cars/app/pages/map/map_page.dart';
 import 'package:flutter_cars/app/pages/video/video_page.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
@@ -50,7 +51,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
-            onPressed: _onClickMap,
+            onPressed: () => _onClickMap(context),
           ),
           IconButton(
             icon: Icon(Icons.videocam),
@@ -246,10 +247,28 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     );
   }
 
-  void _onClickMap() {}
+  void _onClickMap(context) {
+    if (_car.latitude != null &&
+        _car.latitude.isNotEmpty &&
+        _car.longitude != null &&
+        _car.longitude.isNotEmpty) {
+
+      push(context, MapPage(_car));
+    } else {
+      Fluttertoast.showToast(
+          msg: "This car has no location available.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          // timeInSecForIos is only used for iOS.
+          timeInSecForIos: 1,
+          backgroundColor: blendedRed(),
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
 
   void _onClickVideo(context) {
-    if(_car.urlVideo != null && _car.urlVideo.isNotEmpty) {
+    if (_car.urlVideo != null && _car.urlVideo.isNotEmpty) {
       //launch(_car.urlVideo);
       push(context, VideoPage(_car));
     } else {
@@ -310,3 +329,4 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     super.dispose();
   }
 }
+
