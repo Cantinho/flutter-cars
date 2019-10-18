@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cars/app/pages/car_details/PageState.dart';
+import 'package:flutter_cars/app/pages/car_details/page_state.dart';
 import 'package:flutter_cars/app/pages/car_details/car_details_bloc.dart';
 import 'package:flutter_cars/app/pages/car_form/car_form_page.dart';
 import 'package:flutter_cars/app/pages/favorite_car/favorites_model.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
+import 'package:flutter_cars/app/pages/video/video_page.dart';
 import 'package:flutter_cars/app/utils/app_colors.dart';
 import 'package:flutter_cars/app/utils/dialog.dart';
 import 'package:flutter_cars/app/utils/event_bus.dart';
@@ -249,7 +250,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
 
   void _onClickVideo(context) {
     if(_car.urlVideo != null && _car.urlVideo.isNotEmpty) {
-      launch(_car.urlVideo);
+      //launch(_car.urlVideo);
+      push(context, VideoPage(_car));
     } else {
       Fluttertoast.showToast(
           msg: "This car has no video.",

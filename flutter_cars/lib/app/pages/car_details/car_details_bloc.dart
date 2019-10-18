@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_cars/app/pages/car_details/PageState.dart';
+import 'package:flutter_cars/app/pages/car_details/page_state.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/data/repositories/car.dart';
 import 'package:flutter_cars/data/services/LoripsumApi.dart';
