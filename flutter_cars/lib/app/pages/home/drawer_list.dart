@@ -1,13 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cars/app/pages/login/login_page.dart';
 import 'package:flutter_cars/app/pages/login/user.dart';
 import 'package:flutter_cars/app/utils/nav.dart';
+import 'package:flutter_cars/data/services/firebase_service.dart';
 
 class DrawerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Future<User> userFuture = User.get();
+    Future<FirebaseUser> userFuture = FirebaseAuth.instance.currentUser();
 
     return SafeArea(
       child: Container(
@@ -18,10 +20,10 @@ class DrawerList extends StatelessWidget {
               children: <Widget>[
                 Container(
                   color: Colors.pink,
-                  child: FutureBuilder<User>(
+                  child: FutureBuilder<FirebaseUser>(
                     future: userFuture,
                     builder: (context, snapshot) {
-                      User user = snapshot.data;
+                      FirebaseUser user = snapshot.data;
                       return _header(user);
                     },
                   ),
@@ -68,14 +70,14 @@ class DrawerList extends StatelessWidget {
     );
   }
 
-  UserAccountsDrawerHeader _header(final User user) {
+  UserAccountsDrawerHeader _header(final FirebaseUser user) {
     return UserAccountsDrawerHeader(
       margin: EdgeInsets.only(bottom: 0.0),
       decoration: BoxDecoration(
         color: Colors.black54,
       ),
       accountName: Text(
-        user == null ? "" : user.name ?? "",
+        user == null ? "" : user.displayName ?? "",
         style: TextStyle(
           color: Colors.white,
           fontSize: 18,
@@ -84,9 +86,9 @@ class DrawerList extends StatelessWidget {
       accountEmail: Text(user == null ? "" : user.email ?? ""),
 
 
-      currentAccountPicture: (user != null && user.photoUrl != null) ?
+      currentAccountPicture: (user != null && user.photoUrl != null && user.photoUrl.isNotEmpty) ?
       CircleAvatar(
-        child: CachedNetworkImage(imageUrl: user.photoUrl),
+        child: ClipOval(child: CachedNetworkImage(imageUrl: user.photoUrl)),
         backgroundColor: Color.alphaBlend(Colors.black38, Colors.pink),
         //Use below to load image through network
         //backgroundImage: NetworkImage("https://avatars1.githubusercontent.com/u/5253073?s=460&v=4"),
@@ -100,6 +102,7 @@ class DrawerList extends StatelessWidget {
 
   _onClickLogout(BuildContext context) {
     User.clear();
+    FirebaseService().logout();
     push(context, LoginPage(), replace: true);
   }
 }

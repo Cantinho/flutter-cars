@@ -26,7 +26,7 @@ String parseCarType(CarType carType) {
 class CarApi {
   static Future<List<Car>> fetchCars(final CarType carType) async {
     final url =
-        "https://carros-springboot.herokuapp.com/api/v2/carros/tipo/${parseCarType(carType)}";
+        "https://carros-springboot.herokuapp.com/api/v1/carros/tipo/${parseCarType(carType)}";
     print("GET > $url");
 
     final response = await http.get(url);

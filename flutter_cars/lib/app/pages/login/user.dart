@@ -11,8 +11,8 @@ class User {
   String photoUrl;
   List<String> roles;
 
-  User(this.id, this.username, this.name, this.email, this.token, this.photoUrl,
-      this.roles);
+  User({this.id, this.username, this.name, this.email, this.token, this.photoUrl,
+      this.roles});
 
   User.fromJson(Map<String, dynamic> map)
       : id = map['id'],
@@ -21,7 +21,7 @@ class User {
         email = map["email"],
         token = map["token"],
         photoUrl = map["urlFoto"],
-        roles = map["roles"].cast<String>();
+        roles = map['roles'] != null ? map['roles'].cast<String>() : null;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

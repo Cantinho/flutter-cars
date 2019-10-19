@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cars/app/pages/home/home_page.dart';
@@ -59,10 +60,10 @@ class _SplashPageState extends State<SplashPage> {
 
     final Future waitForAWhile = Future.delayed(Duration(seconds: 4));
     final Future accessDatabase = DatabaseHelper.getInstance().database;
-    final Future<User> fetchUserFromSharedPreference = User.get();
+    final Future<FirebaseUser> firebaseUser = FirebaseAuth.instance.currentUser();
 
-    Future.wait([waitForAWhile, accessDatabase, fetchUserFromSharedPreference]).then((List values) {
-      final User user = values[2];
+    Future.wait([waitForAWhile, accessDatabase, firebaseUser]).then((List values) {
+      final FirebaseUser user = values[2];
 ;      if (user != null) {
         push(context, HomePage(), replace: true);
       } else {
