@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage>
       floatingActionButton: StreamBuilder<User>(
         stream: _homePageBloc.stream,
         builder: (context, snapshot) {
-          if(snapshot.hasData && snapshot.data != null && snapshot.data.roles.contains("ROLE_ADMIN")) {
+          if(snapshot.hasData && snapshot.data != null && snapshot.data.isAdmin()) {
             return FloatingActionButton(
               child: Icon(Icons.add),
               backgroundColor: blendedRed(),

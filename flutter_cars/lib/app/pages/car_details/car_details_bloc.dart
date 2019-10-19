@@ -9,7 +9,7 @@ import 'package:flutter_cars/data/services/favorite_car_service.dart';
 class CarDetailsBloc {
 
   final _streamController = StreamController<String>();
-  final _streamFavoriteController = StreamController<bool>();
+  final _streamFavoriteController = StreamController<bool>.broadcast();
   final _streamPageStateController = StreamController<PageState>();
   final _streamUserController = StreamController<User>();
 
@@ -56,5 +56,7 @@ class CarDetailsBloc {
   void dispose() {
     _streamController.close();
     _streamFavoriteController.close();
+    _streamPageStateController.close();
+    _streamUserController.close();
   }
 }
